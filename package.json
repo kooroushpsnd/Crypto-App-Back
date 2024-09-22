@@ -1,0 +1,23 @@
+{
+  "name": "crpto",
+  "version": "1.0.0",
+  "description": "makeing a website by express and Vue js",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "start:prod": "cross-env NODE_ENV=production node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mongoose": "^8.6.3",
+    "socket.io": "^4.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
