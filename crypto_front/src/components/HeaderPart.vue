@@ -1,21 +1,24 @@
 <template>
   <div id="header">
     <div class="content">
-        <a href="" class="logo"><ion-icon size="large" name="diamond-outline"></ion-icon></a>
+        <a :href="url" class="logo"><ion-icon size="large" name="diamond-outline"></ion-icon></a>
         <p class="welcome">Welcome To {{ name }}</p>
-        <a href="" class="logo"><ion-icon size="large" name="diamond-outline"></ion-icon></a>
+        <a :href="url" class="logo"><ion-icon size="large" name="diamond-outline"></ion-icon></a>
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
     data(){
         return{
-            name: "Crypto World"
+            name: "Crypto World",
+            url: ""
         }
     }
-}
+})
 </script>
 
 <style scoped>
@@ -40,5 +43,6 @@ export default {
     .logo{
         top:15px;
         position: relative;
+        color: rgb(108, 156, 199);
     }
 </style>
