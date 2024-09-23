@@ -9,9 +9,8 @@ app.use(express.json({limit : '10kb'}))
 
 
 setInterval(() => {
-    cryptoController.refreshData,
-    console.log("refresh")
-}, 30000);
+    cryptoController.refreshData()
+}, 3000000);
 
 app.use('/crypto' ,cryptoRoute)
 
