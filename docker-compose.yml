@@ -1,13 +1,9 @@
 version: '3'
 services:
   node-app:
-    build:
-      context: .
-      args:
-        - NODE_ENV=production
-    image: node:slim
+    image: kooroushpsnd/mevn
     env_file:
-      - ./.env.production
+      - ./.env
     depends_on:
       - mongo
     ports:
@@ -19,8 +15,7 @@ services:
       - mongo-db:/data/db
 
   vue-js:
-    build:
-      context: ../crypto.front-js
+    image: kooroushpsnd/mevn.front
     ports:
       - "8080:8080"
     
