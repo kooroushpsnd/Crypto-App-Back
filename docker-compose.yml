@@ -1,17 +1,28 @@
 version: '3'
 services:
   node-app:
-    build: .
-    image: node
+    build:
+      context: .
+      args:
+        - NODE_ENV=production
+    image: node:slim
     env_file:
       - ./.env.production
     depends_on:
       - mongo
+    ports:
+      - "3000:3000"
     
   mongo:
     image: mongo:4.4
     volumes:
-      - mongo-db:data/db
+      - mongo-db:/data/db
+
+  vue-js:
+    build:
+      context: ../crypto.front-js
+    ports:
+      - "8080:8080"
     
 volumes:
   mongo-db:

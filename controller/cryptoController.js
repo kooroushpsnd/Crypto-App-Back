@@ -53,5 +53,4 @@ exports.refreshData = catchAsync(async(req ,res ,next) => {
             await Crypto.findOneAndUpdate({name : list_name[i]} ,{$set : {price}} ,{new : true})
         }
     }
-    next()
 })

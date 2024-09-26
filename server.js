@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const socketIO = require("socket.io")
+const Crypto = require("./models/cryptoModel")
+const cors = require('cors')
 
 process.on('uncaughtException', err => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
@@ -28,15 +30,24 @@ const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
 
-const io = socketIO(server)
+const io = new socketIO.Server(server ,{
+  cors: {
+    origin: '*',
+    methods: ["GET" ,"POST"]
+  }
+})
+
+app.use(cors())
 
 io.on("connection" ,(socket) => {
-    console.log("Client Connected!")
-    socket.emit("crypto" ,"crypto WebSite")
+    const sendCryptoData = async () => {
+      let crypto = await Crypto.find()
+      if (crypto.length == 0) crypto = 'fail'
 
-    socket.on("disconnect" ,() => {
-        console.log("client Disconnect!")
-    })
+      socket.emit("cryptoData" , crypto)
+    }
+    sendCryptoData()
+    setInterval(sendCryptoData ,53000)
 })
 
 process.on('unhandledRejection', err => {
