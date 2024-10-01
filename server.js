@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const socketIO = require("socket.io")
 const Crypto = require("./models/cryptoModel")
-const cors = require('cors')
+
 
 process.on('uncaughtException', err => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
@@ -29,12 +29,12 @@ const server = app.listen(port, () => {
 
 const io = new socketIO.Server(server ,{
   cors: {
-    origin: '*',
-    methods: ["GET" ,"POST"]
+    origin: 'http://localhost:8080',
+    methods: ["GET" ,"POST" ,"PATCH" ,"DELETE" ,"OPTIONS" ,"PUT"],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
   }
 })
-
-app.use(cors())
 
 io.on("connection" ,(socket) => {
     const sendCryptoData = async () => {
