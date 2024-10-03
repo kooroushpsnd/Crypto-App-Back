@@ -26,9 +26,9 @@ app.use(HPP())
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended: false}))
 
-// setInterval(() => {
-//     cryptoController.refreshData()
-// }, 60000);
+setInterval(() => {
+    cryptoController.refreshData()
+}, 60000);
 
 app.use('/crypto' ,cryptoRouter)
 app.use('/users' , userRouter)
