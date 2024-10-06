@@ -11,6 +11,7 @@ const signToken = id => {
         expiresIn: process.env.JWT_EXPIRES_IN
     })
 }
+exports.signToken = signToken
 
 const createAndSendToken = (user ,statusCode ,res) => {
     const token = signToken(user._id)
@@ -28,11 +29,17 @@ const createAndSendToken = (user ,statusCode ,res) => {
 }
 
 exports.signup = catchAsync(async(req ,res ,next) => {
+    const {name ,email ,password ,passwordConfirm} = req.body
+
+    if(!email || !password || !name || !passwordConfirm){
+        return next(new AppError("Please provide name and email and password and passwordConfirm Field" ,400))
+    }
+
     const newUser = await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm
+        name ,
+        email ,
+        password ,
+        passwordConfirm
     })
 
     createAndSendToken(newUser ,201 ,res)

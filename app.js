@@ -9,7 +9,6 @@ const XSS = require("xss-clean")
 const HPP = require("hpp")
 const bodyparser = require("body-parser")
 const cors = require('cors')
-const { bot } = require('./controller/bot')
 
 const app = express()
 
@@ -33,10 +32,19 @@ setInterval(() => {
 app.use('/crypto' ,cryptoRouter)
 app.use('/users' , userRouter)
 
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const status = err.status || 'error';
+
+    res.status(statusCode).json({
+        status,
+        statusCode,
+        message: err.message,
+    });
+});
+
 app.all('*' , (req ,res ,next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!` ,404))
 })
-
-
 
 module.exports = app;
