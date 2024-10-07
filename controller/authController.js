@@ -72,9 +72,9 @@ exports.protect = catchAsync(async(req ,res ,next) => {
     if(!token){
         return next(new AppError("you are not logged in ,Please login to get access",401))
     }
-    
+     
     const decoded = await promisify(jwt.verify)(token ,process.env.JWT_SECRET)
-
+    
     const fresUser = await User.findById(decoded.id)
     if(!fresUser){
         return next(new AppError("The use belonging to this token does no longer exist" ,401))

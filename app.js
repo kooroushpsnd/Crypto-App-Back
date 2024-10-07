@@ -25,9 +25,12 @@ app.use(HPP())
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended: false}))
 
-setInterval(() => {
-    cryptoController.refreshData()
-}, 60000);
+if(process.env.NODE_ENV != "test"){
+    setInterval(() => {
+        cryptoController.refreshData()
+    }, 60000);
+}
+
 
 app.use('/crypto' ,cryptoRouter)
 app.use('/users' , userRouter)

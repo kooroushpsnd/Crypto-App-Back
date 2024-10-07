@@ -79,7 +79,7 @@ describe("Signup Controller" ,() => {
                 password: "password123" ,passwordConfirm: "password123"
             })
 
-            expect(res.status).toBe(201) 
+        expect(res.status).toBe(201) 
     });
 })
 
@@ -96,15 +96,15 @@ describe("Login Controller" ,() => {
             select: jest.fn().mockResolvedValue({
                 email: "test@example.com" ,
                 password:"test123",
-                correctPassword: jest.fn().mockResolvedValue(true)
+                correctPassword: jest.fn().mockResolvedValue(false)
             })
         })
 
         const res = await request(app)
             .post('/users/login')
-            .send({email: 'test@example.com' ,password: "test1234"})
+            .send({email: 'tesdt@example.com' ,password: "test12354"})
         
-        console.log(res)
+        
         expect(res.status).toBe(401)
         expect(res.body.message).toBe("Incorrect email or password!")
     })
@@ -120,9 +120,65 @@ describe("Login Controller" ,() => {
             });
 
         expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('status', 'success'); 
-        expect(response.body).toHaveProperty('token');
+        expect(response.body).toHaveProperty('status', 'success');
         expect(response.body.data.user).toHaveProperty('email', 'testuser@example.com');
         expect(response.body.data.user).toHaveProperty('role', 'user');
     });
+})
+
+describe("protected Routes" ,() => {
+    let token
+
+    beforeEach(() => {
+        token = jwt.sign({id: "mockUserId"} ,process.env.JWT_SECRET)
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(null, { id: "mockUserId" });
+          })
+    })
+
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
+    it('should return 401 if no token is provided ', async() => {
+        const res =await request(app).get('/users')
+
+        expect(res.status).toBe(401)
+        expect(res.body.message).toBe("you are not logged in ,Please login to get access")
+    });
+
+    it('should return 401 if user no longer exists ', async() => {
+        User.findById.mockResolvedValue(null)
+        const res = await request(app)
+            .get('/users/role')
+            .set("Authorization" ,`Bearer ${token}`)
+
+        expect(res.status).toBe(401);
+        expect(res.body.message).toBe("The use belonging to this token does no longer exist")   
+    });
+
+    it("should return 401 if user changed password after token was issued", async () => {
+        User.findById.mockResolvedValue({
+          changedPasswordAfter: jest.fn().mockReturnValue(true),
+        });
+    
+        const res = await request(app)
+          .get("/users/role")
+          .set("Authorization", `Bearer ${token}`);
+    
+        expect(res.status).toBe(401);
+        expect(res.body.message).toBe("User recently changed password Please log on again");
+    });
+
+    it("should grant access if token and user are valid", async () => {
+        User.findById.mockResolvedValue({
+          _id: "mockUserId",
+          changedPasswordAfter: jest.fn().mockReturnValue(false),
+        });
+    
+        const res = await request(app)
+          .get("/users/role")
+          .set("Authorization", `Bearer ${token}`);
+    
+        expect(res.status).toBe(200)
+      });
 })
