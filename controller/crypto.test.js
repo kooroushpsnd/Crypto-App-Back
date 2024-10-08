@@ -1,15 +1,15 @@
 jest.mock('../models/cryptoModel')
 jest.mock('axios')
-jest.mock('../controller/authController', () => ({
-    signup: jest.fn((req, res, next) => next()),
-    login: jest.fn((req, res, next) => next()),
-    resetPassword: jest.fn((req, res, next) => next()),
-    forgotPassword: jest.fn((req, res, next) => next()),
-    getUserRole: jest.fn((req, res, next) => next()),
-    updatePassword: jest.fn((req, res, next) => next()),
-    protect: (req, res, next) => next(),
-    restrictTo: () => (req, res, next) => next(),
-}));
+jest.mock('../controller/authController', () => {
+    const actualAuthController = jest.requireActual('../controller/authController');
+    
+    return {
+        ...actualAuthController,
+        protect: (req, res, next) => next(),
+        restrictTo: () => (req, res, next) => next()
+    };
+})
+
 
 const axios = require("axios")
 const request = require('supertest')
