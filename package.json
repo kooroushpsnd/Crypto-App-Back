@@ -1,6 +1,7 @@
 {
   "name": "@kooroush/crpto",
   "version": "1.0.1",
+  "private": false,
   "description": "makeing a website by express and Vue js",
   "main": "index.js",
   "scripts": {
