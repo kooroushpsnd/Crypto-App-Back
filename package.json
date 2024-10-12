@@ -1,6 +1,6 @@
 {
   "name": "crpto",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "description": "makeing a website by express and Vue js",
   "main": "index.js",
   "scripts": {
