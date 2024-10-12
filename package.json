@@ -1,6 +1,7 @@
 {
   "name": "@kooroush/crpto",
   "version": "0.0.0-development",
+  "private": false,
   "description": "makeing a website by express and Vue js",
   "main": "index.js",
   "scripts": {
@@ -43,6 +44,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kooroushpsnd/Crypto-App-Back.git"
+    "url": "git+https://github.com/kooroushpsnd/Crypto-App-Back.git"
   }
 }
