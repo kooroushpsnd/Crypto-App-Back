@@ -1,5 +1,5 @@
 {
-  "name": "crpto",
+  "name": "@kooroush/crpto",
   "version": "0.0.0-development",
   "description": "makeing a website by express and Vue js",
   "main": "index.js",
