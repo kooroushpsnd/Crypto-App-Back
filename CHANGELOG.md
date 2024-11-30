@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/kooroushpsnd/Crypto-App-Back/compare/v1.0.0...v1.0.1) (2024-11-30)
+
+
+### Bug Fixes
+
+* testing crypto ([c2bc9f8](https://github.com/kooroushpsnd/Crypto-App-Back/commit/c2bc9f8ac03af3c1f0896a2bf058d45eb0ce7b41))
+
 # 1.0.0 (2024-10-12)
 
 
