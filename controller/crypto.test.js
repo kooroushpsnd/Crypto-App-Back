@@ -9,12 +9,29 @@ jest.mock('../controller/authController', () => {
         restrictTo: () => (req, res, next) => next()
     };
 })
+jest.mock('multer', () => {
+    const multer = jest.fn(() => ({
+        single: jest.fn(() => (req, res, next) => {
+            req.file = { filename: 'mocked-image.png' }; // Simulate an uploaded file
+            next();
+        }),
+    }));
+    multer.diskStorage = jest.fn(() => ({
+        destination: (req, file, cb) => cb(null, './uploads'),
+        filename: (req, file, cb) => cb(null, file.originalname),
+    }));
+    return multer;
+});
+
 
 
 const axios = require("axios")
 const request = require('supertest')
 const app = require('../app')
 const Crypto =require('../models/cryptoModel')
+const fs = require("fs")
+
+jest.mock("fs")
 
 describe("Crypto Create" ,() => {
     it('should return an error if the crypto name is invalid ', async() => {
@@ -29,23 +46,23 @@ describe("Crypto Create" ,() => {
     });
 
     it('should create a new crypto entry and return success', async() => {
-        const cryptoData = {USD: 4000}
-
-        axios.get.mockResolvedValue({data: cryptoData})
+        axios.get.mockResolvedValueOnce({ data: { USD: 4000 ,Response: "success" }});
+        axios.get.mockResolvedValueOnce({ data: { currency: [{ price: '60' }] } });
 
         Crypto.create = jest.fn().mockResolvedValue({
             name: 'BTC',
-            price: Math.floor(cryptoData.USD * 60000),
+            price: 240000,
+            image: null
         });
 
         const response = await request(app)
                 .post('/crypto')
-                .send({ name: 'btc' })
+                .send({ name: 'BTC'})
                 .expect(201)
 
         expect(response.body.status).toBe('success');
         expect(response.body.crypto).toHaveProperty('name', 'BTC');
-        expect(response.body.crypto).toHaveProperty('price', Math.floor(cryptoData.USD * 60000));
+        expect(response.body.crypto).toHaveProperty('price', 240000);
     });
 })
 
@@ -79,13 +96,18 @@ describe("Crypto remove" ,() => {
     it('should remove a crypto with 204', async() => {
         Crypto.findOne.mockResolvedValue({
             name: 'BTC',
-            price: 60000
+            price: 60000,
+            image: "BTC.png"
         })
+        Crypto.deleteOne.mockResolvedValue({ deletedCount: 1 })
+
+        fs.unlinkSync.mockResolvedValue()
 
         const res = await request(app)
             .delete('/crypto/btc')
-        
-        expect(res.status).toBe(204)
+
+        expect(fs.unlinkSync).toHaveBeenCalledWith('./uploads/BTC.png');
+        expect(res.status).toBe(204);
     });
 
     it('should return no Crypto found with 404', async() => {
