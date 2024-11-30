@@ -10,7 +10,8 @@ const cryptoSchema = new mongoose.Schema({
     price: {
         type: String,
         require: [true ,"a Crypto must have a Price"]
-    }
+    },
+    image: String
 })
 
 const Crypto = mongoose.model("Crypto" ,cryptoSchema)

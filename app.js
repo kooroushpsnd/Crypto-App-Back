@@ -3,14 +3,17 @@ const cryptoController = require("./controller/cryptoController")
 const AppError = require('./utils/appError')
 const cryptoRouter = require('./routes/cryptoRoutes')
 const userRouter = require('./routes/userRoutes')
+const errorController = require('./controller/errorController')
 const helmet = require("helmet")
 const mongoSanitize = require("express-mongo-sanitize")
 const XSS = require("xss-clean")
 const HPP = require("hpp")
 const bodyparser = require("body-parser")
 const cors = require('cors')
+const path = require("path")
 
 const app = express()
+app.use('/uploads' ,express.static(path.join(__dirname ,'uploads')))
 
 app.use(cors())
 app.options('*' ,cors())
@@ -49,5 +52,7 @@ app.use((err, req, res, next) => {
 app.all('*' , (req ,res ,next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!` ,404))
 })
+
+app.use(errorController)
 
 module.exports = app;

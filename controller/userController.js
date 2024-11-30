@@ -5,7 +5,7 @@ const catchAsync = require('../utils/catchAsync')
 const filterObj = (Obj , ...allowedFields) => {
     const newObj = {}
     Object.keys(Obj).forEach(el => {
-        if (allowedFields.includes(el)) newObj[el] = Obj[el]
+        if (allowedFields.includes(el) && Obj[el].trim()) newObj[el] = Obj[el].trim()
     })
     return newObj
 }

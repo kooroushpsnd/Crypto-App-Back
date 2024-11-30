@@ -8,6 +8,8 @@ services:
       - mongo
     ports:
       - "3000:3000"
+    networks:
+      - CryptoNetwork
     
   mongo:
     image: mongo:4.4
@@ -15,9 +17,31 @@ services:
       - mongo-db:/data/db
 
   vue-js:
+    build: 
+      context: ./crypto.front.js
+      dockerfile: Dockerfile
     image: kooroushpsnd/mevn.front
     ports:
-      - "8080:8080"
+      - "8080:80"
+    networks:
+      - CryptoNetwork
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - node-app
+      - vue-js
+    networks:
+      - CryptoNetwork
     
 volumes:
   mongo-db:
+
+networks:
+  CryptoNetwork:
+    driver: bridge
