@@ -2,12 +2,15 @@ version: '3'
 services:
   node-app:
     image: kooroushpsnd/mevn
+    container_name: cryptoback
     env_file:
       - ./.env
     depends_on:
       - mongo
     ports:
       - "3000:3000"
+    volumes:
+      - ./uploads:/app/uploads
     networks:
       - CryptoNetwork
     
@@ -17,10 +20,8 @@ services:
       - mongo-db:/data/db
 
   vue-js:
-    build: 
-      context: ./crypto.front.js
-      dockerfile: Dockerfile
     image: kooroushpsnd/mevn.front
+    container_name: cryptofront
     ports:
       - "8080:80"
     networks:
@@ -28,11 +29,12 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: nginx
+    container_name: nginxCrypto
     ports:
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./uploads:/app/uploads
     depends_on:
       - node-app
       - vue-js
